@@ -1,4 +1,4 @@
-LazyDirect = LibStub("AceAddon-3.0"):NewAddon("LazyDirect")
+LazyDirect = LibStub("AceAddon-3.0"):NewAddon("LazyDirect", "AceConsole-3.0")
 LazyDirect.options = {enabled = {}}
 
 LazyDirect.targets = {
@@ -20,17 +20,22 @@ function LazyDirect:OnInitialize()
       tanks = {}
     }
   }
-  LazyDirect.db = LibStub("AceDB-3.0"):New("LazyDirectDB", dbDefaults)
-  LazyDirect.enabled = LazyDirect:CopyTable(LazyDirect.db.profile.enabled)
-  LazyDirect.priorityOrder = LazyDirect:CopyTable(LazyDirect.db.profile.priorityOrder)
-  LazyDirect.tanks = LazyDirect:CopyTable(LazyDirect.db.profile.tanks)
+  self.db = LibStub("AceDB-3.0"):New("LazyDirectDB", dbDefaults)
+  self.enabled = self:CopyTable(self.db.profile.enabled)
+  self.priorityOrder = self:CopyTable(self.db.profile.priorityOrder)
+  self.tanks = self:CopyTable(self.db.profile.tanks)
 
-  LazyDirect.InitializeSettings()
+  self:InitializeSettings()
+  
+  self:RegisterChatCommand("lazydirect","HandleCommand")
+  self:RegisterChatCommand("LazyDirect","HandleCommand")
+  self:RegisterChatCommand("Lazydirect","HandleCommand")
+  self:RegisterChatCommand("lazyDirect","HandleCommand")
 end
 
 -- any stuff that needs to happen when the addon is enabled
 function LazyDirect:OnEnable()
-  LazyDirect.main()
+  self:main()
 end
 
 function LazyDirect:CopyTable(src)
@@ -39,4 +44,10 @@ function LazyDirect:CopyTable(src)
     newTable[k] = v
   end
   return newTable
+end
+
+function LazyDirect:CountTable(t)
+  local count = 0
+  for _ in pairs(t) do count = count + 1 end
+  return count
 end

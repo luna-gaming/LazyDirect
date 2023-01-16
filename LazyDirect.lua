@@ -21,7 +21,7 @@ function LazyDirect:UpdateTanks()
           name = UnitName(groupType .. i),
           id = groupType .. i
         })
-        if #tanks == 2 then
+        if self:CountTable(tanks) == 2 then
           break
         end
       end
@@ -33,7 +33,7 @@ function LazyDirect:UpdateTanks()
   -- update known tanks in the same position and get list of unkown tanks
   for i,newTank in ipairs(tanks) do
     local tankKnown = false
-    for j,knownTank in ipairs(LazyDirect.tanks) do
+    for j,knownTank in ipairs(self.tanks) do
       if newTank.name == knownTank.name then
         tankUpdate[j] = newTank
         tankKnown = true
@@ -50,8 +50,8 @@ function LazyDirect:UpdateTanks()
   end
   
   -- set the tanks
-  LazyDirect.tanks = tankUpdate
-  LazyDirect.db.profile.tanks = tankUpdate
+  self.tanks = tankUpdate
+  self.db.profile.tanks = tankUpdate
 end
 
 function LazyDirect:UpdateMacros()
@@ -66,10 +66,10 @@ function LazyDirect:UpdateMacros()
       local body = string.format(macroStart, spell)
     
       -- loop throught the priority order and append each target to the body
-      for _, target in ipairs(LazyDirect.priorityOrder) do
+      for _, target in ipairs(self.priorityOrder) do
         -- if we come across a tank target, get the respective tank from the tank list
         if string.sub(target,1,4) == "TANK" then
-          tank = LazyDirect.tanks[tonumber(string.sub(target,5,5))]
+          tank = self.tanks[tonumber(string.sub(target,5,5))]
           if tank ~= nil then
             body = body .. string.format(targetTemplate, tank.id)
           end
@@ -99,22 +99,38 @@ function LazyDirect:UpdateMacros()
       end
     
       -- if the macro was updated, inform the user
-      if macroUpdated then
-        if #LazyDirect.tanks > 0 then
-		  tankStrings = {}
-		  for i, tank in ipairs(LazyDirect.tanks) do
-		    table.insert(tankStrings, tank.name .. " (Tank " .. i .. ")")
-		  end
-          print("[LazyDirect] Updated " .. name .. " to use tank(s): " .. table.concat(tankStrings,", "))
-        end
+      if macroUpdated and self:CountTable(self.tanks) > 0 then
+		tankStrings = {}
+		for i, tank in pairs(self.tanks) do
+		  table.insert(tankStrings, tank.name .. " (Tank " .. i .. ")")
+		end
+        print("[LazyDirect] Updated " .. name .. " to use tank(s): " .. table.concat(tankStrings,", "))
       end
 	end
   end
 end
 
+function LazyDirect:HandleCommand(args)
+  if args == "swap" then
+    if InCombatLockdown() == true then
+      print("[LazyDirect] Cannot swap tanks or update macros while in combat. Try again later.")
+    elseif self:CountTable(self.tanks) == 0 then
+      print("[LazyDirect] Need at least one tank to swap tank indentifiers.")
+    else
+      print("swapping")
+      local tank1 = self.tanks[1]
+      local tank2 = self.tanks[2]
+      self.tanks = {[1] = tank2, [2] = tank1}
+      self.db.profile.tanks = {[1] = tank2, [2] = tank1}
+      
+      self:UpdateMacros()
+    end
+  end
+end
+
 function LazyDirect:main(event)
-  LazyDirect:UpdateTanks()
-  LazyDirect:UpdateMacros()
+  self:UpdateTanks()
+  self:UpdateMacros()
 end
 
 local f = CreateFrame("Frame")
