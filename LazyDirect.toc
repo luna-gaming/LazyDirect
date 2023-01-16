@@ -1,0 +1,6 @@
+## Interface: 100002
+## Title: LazyDirect
+## Author: Loona
+## Version: 1.0.0
+
+LazyDirect.lua
