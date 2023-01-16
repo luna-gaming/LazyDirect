@@ -131,8 +131,8 @@ function LazyDirect:HandleCommand(args)
 end
 
 function LazyDirect:main(event)
-  self:UpdateTanks()
-  self:UpdateMacros()
+  LazyDirect:UpdateTanks()
+  LazyDirect:UpdateMacros()
 end
 
 local f = CreateFrame("Frame")
