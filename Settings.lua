@@ -189,6 +189,9 @@ function LazyDirect:InitializeSettings()
     get = "GetOption",
     set = "SetOption",
     args = {
+      description1 = {type = "description", name = "Select which targets you wish to include in the LazyDirect macro, " .. 
+        "and then order the targets using the priority list below.", order = 10},
+      description2 = {type = "description", name = "The LazyDirect macro will use the highest priority target that exists, is alive, and is friendly.", order = 20},
       targetDesc = {type = "header", name = "Targets", order = 50},
       priority = {type = "header", name = "Priority", order = 99},
       highest = {type = "description", name = "Highest Priority", order = 100},

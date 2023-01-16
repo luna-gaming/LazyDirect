@@ -73,6 +73,8 @@ function LazyDirect:UpdateMacros()
           if tank ~= nil then
             body = body .. string.format(targetTemplate, tank.id)
           end
+        elseif target == "deselect" then
+          -- if user deselected a priority and left it that way, just skip it.
 		else 
 		  body = body .. string.format(targetTemplate, target)
         end
