@@ -1,6 +1,11 @@
 ## Interface: 100002
 ## Title: LazyDirect
 ## Author: Loona
-## Version: 1.0.0
+## Version: 2.0.0
+## SavedVariables: LazyDirectDB
 
+embeds.xml
+
+Init.lua
+Settings.lua
 LazyDirect.lua
