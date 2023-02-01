@@ -119,7 +119,6 @@ function LazyDirect:HandleCommand(args)
     elseif self:CountTable(self.tanks) == 0 then
       print("[LazyDirect] Need at least one tank to swap tank indentifiers.")
     else
-      print("swapping")
       local tank1 = self.tanks[1]
       local tank2 = self.tanks[2]
       self.tanks = {[1] = tank2, [2] = tank1}
